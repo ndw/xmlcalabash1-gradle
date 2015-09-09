@@ -1,0 +1,175 @@
+import groovy.swing.SwingBuilder
+import java.awt.Point
+
+plugins {
+  id "groovy"
+  id "maven"
+  id "signing"
+}
+
+repositories {
+  maven { url uri('/tmp/repo') }
+  mavenLocal()
+  mavenCentral()
+  maven { url "http://maven.restlet.org" }
+  maven { url "http://developer.marklogic.com/maven2" }
+  maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+configurations.all {
+  resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+    if (details.requested.name == 'saxon' && details.requested.version == '8.7') {
+      details.useTarget "net.sf.saxon:Saxon-HE:" + saxonVersion
+    }
+  }
+}
+
+dependencies {
+    compile gradleApi()
+    compile (
+      [group: 'net.sf.saxon', name: 'Saxon-HE', version: saxonVersion],
+      [group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.1.7-96']
+    )
+
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.3'
+    testCompile 'junit:junit:4.12'
+}
+
+// Variables
+project.ext.releaseVersion = version
+project.ext.distVersion = version + snapshot
+
+version = project.ext.distVersion // - gets turned into . in some contexts
+
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
+  classifier = 'javadoc'
+  from groovydoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+  archives jar
+  archives sourcesJar
+  archives groovydocJar
+}
+
+/*
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('/tmp/repo'))
+        }
+    }
+}
+*/
+
+signing {
+  required { gradle.taskGraph.hasTask("uploadArchives") }
+  sign configurations.archives
+}
+
+// I refuse to put my PGP password in a file.
+//
+// Adapted from
+// https://www.timroes.de/2014/01/19/using-password-prompts-with-gradle-build-files/
+//
+// N.B. This can't work in a CI environment so there's no way to
+// automatically publish the artifacts from, for example, Travis CI.
+//
+gradle.taskGraph.whenReady { taskGraph ->
+  if(taskGraph.hasTask(':uploadArchives')) {
+
+    def pass = ''
+    if(System.console() == null) {
+      new SwingBuilder().edt {
+        dialog(modal: true,
+            title: 'Enter password',
+            alwaysOnTop: true,
+            resizable: false,
+            locationRelativeTo: null,
+            locationByPlatform: true,
+            // On my Linux multi-monitor setup, the dialog "appears" at
+            // the top of the virtual desktop below my desktop. So move
+            // the damned thing somewhere visible. Meh.
+            location: new Point(100,100),
+            pack: true,
+            show: true
+        ) {
+          vbox { //
+            label(text: "Please enter key passphrase:")
+            input = passwordField()
+            button(defaultButton: true, text: 'OK', actionPerformed: {
+              pass = input.password;
+              dispose();
+            })
+          }
+        }
+      }
+    } else {
+      pass = System.console().readPassword("\nPlease enter key passphrase: ")
+      pass = new String(pass)
+    }
+
+    if (pass.size() <= 0) {
+      throw new InvalidUserDataException("You must enter a password to proceed.")
+    }
+
+    allprojects { ext."signing.password" = pass }
+
+  }
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment ->
+        signing.signPom(deployment)
+      }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: sonatypeUsername, password: sonatypePassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: sonatypeUsername, password: sonatypePassword)
+      }
+
+      pom.project {
+        name 'XML Calabash Gradle Plugin'
+        packaging 'jar'
+        description 'A Gradle Plugin for XML Calabash 1.x'
+        url 'https://github.com/ndw/xmlcalabash1-gradle'
+
+        scm {
+          url 'scm:git@github.com:ndw/xmlcalabash1-gradle.git'
+          connection 'scm:git@github.com:ndw/xmlcalabash1-gradle.git'
+          developerConnection 'scm:git@github.com:ndw/xmlcalabash1-gradle.git'
+        }
+
+        licenses {
+          license {
+            name 'Common Development and Distribution License (CDDL) version 1.0'
+            url 'http://www.opensource.org/licenses/cddl1.txt'
+            distribution 'repo'
+          }
+          license {
+            name 'GNU General Public License version 2'
+            url 'http://www.gnu.org/licenses/gpl-2.0.txt'
+            distribution 'repo'
+          }
+        }
+
+        developers {
+          developer {
+            id 'ndw'
+            name 'Norman Walsh'
+          }
+        }
+      }
+    }
+  }
+}
