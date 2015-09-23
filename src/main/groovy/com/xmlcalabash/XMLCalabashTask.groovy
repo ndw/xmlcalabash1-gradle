@@ -220,15 +220,18 @@ class XMLCalabashTask extends ConventionTask {
         }
 
         for (String ns : nsBindings.keySet()) {
-            args.add("-b " + ns + "=" + nsBindings.get(ns))
+            args.add("-b")
+            args.add(ns + "=" + nsBindings.get(ns))
         }
 
         if (getConfigFile() != null) {
-            args.add("-c " + getConfigFile())
+            args.add("-c")
+            args.add(getConfigFile())
         }
 
         if (getSaxonConfigFile() != null) {
-            args.add("--saxon-configuration " + getSaxonConfigFile())
+            args.add("--saxon-configuration")
+            args.add(getSaxonConfigFile())
         }
 
         for (String s : inputs) {
@@ -248,34 +251,45 @@ class XMLCalabashTask extends ConventionTask {
         }
 
         if (getEntityResolver() != null) {
-            args.add("-E " + getEntityResolver())
+            args.add("-E")
+            args.add(getEntityResolver())
         }
 
         if (getUriResolver() != null) {
-            args.add("-U " + getUriResolver())
+            args.add("-U")
+            args.add(getUriResolver())
         }
 
         if (getLibrary() != null) {
-            args.add("-l " + getLibrary())
+            args.add("-l")
+            args.add(getLibrary())
         }
 
         if (getStep() != null) {
-            args.add("-s " + getStep())
+            args.add("-s" + getStep())
         }
 
         if (getProfilePipeline() != null) {
-            args.add("--profile " + getProfilePipeline())
+            args.add("--profile")
+            args.add(getProfilePipeline())
         }
 
         if (getSaxonEdition() != null) {
-            args.add("-P " + getSaxonEdition())
+            args.add("-P")
+            args.add(getSaxonEdition())
         }
 
-        if (pipeline == null) {
-            throw notAllowed("You must specify a pipeline.")
+        if (getPipeline() == null && getStep() == null) {
+            throw notAllowed("You must specify a pipeline or a step.")
         }
 
-        args.add(pipeline)
+        if (getPipeline() != null && getStep() != null) {
+            throw notAllowed("You must specify either a pipeline or a step.")
+        }
+
+        if (getPipeline() != null) {
+            args.add(getPipeline())
+        }
 
         for (String s : options) {
             args.add(s)
@@ -290,7 +304,7 @@ class XMLCalabashTask extends ConventionTask {
         // list for the command line, so let's just reuse that. And since we're doing a complete
         // hack, we'll just instantiate the driver, shall we?
         Main main = new Main()
-        main.run(getArgs().toArray(new String[0]))
+        main.runMethod(getArgs().toArray(new String[0]))
     }
 
     private static UnsupportedOperationException notAllowed(final String msg) {
