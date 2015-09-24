@@ -3,6 +3,7 @@ import java.awt.Point
 
 plugins {
   id "groovy"
+  id "osgi"
   id "maven"
   id "signing"
 }
@@ -46,10 +47,59 @@ task groovydocJar(type: Jar, dependsOn: groovydoc) {
   from groovydoc.destinationDir
 }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+jar {
+  manifest {
+    instruction 'Built-By', builtBy
+    instruction 'Implementation-Vendor', 'Norman Walsh'
+    instruction 'Implementation-Title', 'XML Calabash Gradle Tasks'
+    instruction 'Implementation-Version', distVersion
+    instruction 'Bundle-SymbolicName', 'com.xmlcalabash.XMLCalabashPlugin'
+    instruction 'Bundle-RequiredExecutionEnvironment', 'J2SE-1.7'
+    instruction 'Export-Package', '*, etc'
+  }
 }
+
+task copyStuff(type: Copy) {
+  from 'README.adoc'
+  from 'LICENSE.md'
+  into 'build/dist'
+}
+jar.dependsOn copyStuff
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from tasks.javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task copyJar(dependsOn: jar, type: Copy) {
+  from "build/libs/xmlcalabash1-gradle-" + distVersion + ".jar"
+  into "build/dist"
+}
+
+task copyJavaDoc(dependsOn: javadoc, type: Copy) {
+  from "build/docs"
+  into "build/dist/docs"
+}
+
+task makeDist(dependsOn: [build, copyJar]) << {
+  println "Created distribution in build/dist"
+}
+
+task zipDist(dependsOn: makeDist, type: Zip) {
+  from('build/dist')
+  into 'xmlcalabash1-gradle-' + distVersion
+  archiveName 'xmlcalabash1-gradle-' + distVersion + ".zip"
+}
+
+task dist(dependsOn: [zipDist]) << {
+  // nop
+}
+
 
 artifacts {
   archives jar
@@ -70,57 +120,6 @@ uploadArchives {
 signing {
   required { gradle.taskGraph.hasTask("uploadArchives") }
   sign configurations.archives
-}
-
-// I refuse to put my PGP password in a file.
-//
-// Adapted from
-// https://www.timroes.de/2014/01/19/using-password-prompts-with-gradle-build-files/
-//
-// N.B. This can't work in a CI environment so there's no way to
-// automatically publish the artifacts from, for example, Travis CI.
-//
-gradle.taskGraph.whenReady { taskGraph ->
-  if(taskGraph.hasTask(':uploadArchives')) {
-
-    def pass = ''
-    if(System.console() == null) {
-      new SwingBuilder().edt {
-        dialog(modal: true,
-            title: 'Enter password',
-            alwaysOnTop: true,
-            resizable: false,
-            locationRelativeTo: null,
-            locationByPlatform: true,
-            // On my Linux multi-monitor setup, the dialog "appears" at
-            // the top of the virtual desktop below my desktop. So move
-            // the damned thing somewhere visible. Meh.
-            location: new Point(100,100),
-            pack: true,
-            show: true
-        ) {
-          vbox { //
-            label(text: "Please enter key passphrase:")
-            input = passwordField()
-            button(defaultButton: true, text: 'OK', actionPerformed: {
-              pass = input.password;
-              dispose();
-            })
-          }
-        }
-      }
-    } else {
-      pass = System.console().readPassword("\nPlease enter key passphrase: ")
-      pass = new String(pass)
-    }
-
-    if (pass.size() <= 0) {
-      throw new InvalidUserDataException("You must enter a password to proceed.")
-    }
-
-    allprojects { ext."signing.password" = pass }
-
-  }
 }
 
 uploadArchives {

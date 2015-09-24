@@ -1,0 +1,15 @@
+language: java
+script: gradle dist
+install:
+- echo sonatypeUsername=none >> gradle.properties
+- echo sonatypePassword=none >> gradle.properties
+
+deploy:
+  provider: releases
+  api_key:
+    secure: hzEoKnIKfQ9SA1FJ/L+jcJRyMX8l6j+Ukynsh8R37vtB6ramJXqKHHewXDjo5dZSEM5EvcwVIU6pb7chDkDOw/p5vFr/Ali6fimo6qZjQO+OEUiJ3AzzFHNbYb9jTih80FC+qyyzgSIo1H26R9NhOfRcskF1q1IGk8JSKr6VZJafVXS5SZIzklO4VX4WB4QPAmBxgUeMffUHSkK0bh06owSdTNT7TqrgdKo8N/hlp3PZclrMGaMExSuLgeGcUxhVahZ+VPrbT/66He2+Dtlewi9JlfJlfYRB9BRLtkG1cWrkwItNEsZnzj1D94rT3aUcpVqUkHbE2IBgx2Phsj/Yn6AtRzQjxNyt5b1U3SoIAkeR/nceKkjrAOblFrl5aQsTGlYxENtqPtRQSu10RjOI8d0tvojh+RCM7Yonu/RmA0Joft/Sl28nxeXlPH0VkD/kfbKYoxnyb2YLMmEHZwXX/8YQdCbPrnp6NUGC5Ep7osjQAIgYZR9eUJNG9TVgA839St6L+cLTV0ydYAIf41pPQFt6KX3KWcAOrftHA+GQ105zGfHZCF13XZq3ewKxc8080SKm8qUWLYr5geDv9C3BwDAZwyfkb+VyqEuBPRMd1x2H/+kFgIsh1ZHvwH41JWAZFpLrUwLceSKi81ufNF6wdUWKiaIW5rV5Ear6LWGkhAw=
+  file:
+    - build/distributions/xmlcalabash1-gradle-$TRAVIS_TAG.zip
+  on:
+    tags: true
+    all_branches: true
