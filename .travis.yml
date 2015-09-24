@@ -1,5 +1,6 @@
 language: java
 script: gradle dist
+sudo: false
 install:
 - echo sonatypeUsername=none >> gradle.properties
 - echo sonatypePassword=none >> gradle.properties
