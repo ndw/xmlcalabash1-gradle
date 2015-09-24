@@ -1,4 +1,4 @@
-package com.xmlcalabash.gradle
+package com.xmlcalabash
 
 import com.xmlcalabash.XMLCalabashExec
 import org.junit.Test
