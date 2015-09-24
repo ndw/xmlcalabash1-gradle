@@ -1,5 +1,5 @@
 language: java
-script: gradle dist
+script: gradle dist -x test
 sudo: false
 install:
 - echo sonatypeUsername=none >> gradle.properties
