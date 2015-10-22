@@ -271,11 +271,11 @@ class XMLCalabashExec extends JavaExec {
             args.add("-P " + getSaxonEdition())
         }
 
-        if (pipeline == null) {
+        if (getPipeline() == null) {
             throw notAllowed("You must specify a pipeline.")
         }
 
-        args.add(pipeline)
+        args.add(getPipeline())
 
         for (String s : options) {
             args.add(s)
