@@ -147,8 +147,16 @@ class XMLCalabashExec extends JavaExec {
         return this
     }
 
+    String input(String port, File file) {
+        input(port, file.absolutePath)
+    }
+
     String input(String port, String filename) {
         inputs.add("-i" + port + "=" + filename)
+    }
+
+    String dataInput(String port, File file) {
+        dataInput(port, file.absolutePath)
     }
 
     String dataInput(String port, String filename) {
@@ -161,6 +169,10 @@ class XMLCalabashExec extends JavaExec {
         } else {
             inputs.add("-d" + port + "=" + contentType + "@" + filename)
         }
+    }
+
+    String output(String port, File file) {
+        output(port, file.absolutePath)
     }
 
     String output(String port, String filename) {
