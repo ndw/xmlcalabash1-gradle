@@ -12,6 +12,6 @@ deploy:
   file:
     - build/distributions/xmlcalabash1-gradle-$TRAVIS_TAG.zip
   on:
-    tags: true
     all_branches: true
+    tags: true
 
