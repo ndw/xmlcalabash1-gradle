@@ -1,6 +1,3 @@
-import groovy.swing.SwingBuilder
-import java.awt.Point
-
 plugins {
   id "groovy"
   id "osgi"
@@ -127,6 +124,11 @@ uploadArchives {
 signing {
   required { gradle.taskGraph.hasTask("uploadArchives") }
   sign configurations.archives
+}
+
+if(!(ext.has('sonatypeUsername') && ext.has('sonatypePassword'))) {
+  ext.sonatypeUsername = ''
+  ext.sonatypePassword = ''
 }
 
 uploadArchives {
