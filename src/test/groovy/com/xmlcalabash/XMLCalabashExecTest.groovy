@@ -1,12 +1,10 @@
 package com.xmlcalabash
 
-import com.xmlcalabash.XMLCalabashExec
-
-import java.io.File;
-import org.junit.Test
-import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.Project
-import static org.junit.Assert.*
+import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Test
+
+import static org.junit.Assert.assertTrue
 
 class XMLCalabashExecTest {
     @Test
@@ -20,11 +18,24 @@ class XMLCalabashExecTest {
     public void canUseFile() {
         Project project = ProjectBuilder.builder().build()
         def task = project.task('calabash', type: XMLCalabashExec)
-        task.pipeline = new File("pipe.xpl")
-        task.input("source", new File("source.xml"))
-        task.output("result", new File("result.xml"))
+
+        File pipeFile = new File("pipe.xpl")
+        File srcFile = new File("source.xml")
+        File resFile = new File ("result.xml")
+
+        task.pipeline = pipeFile
+        task.input("source", srcFile)
+        task.output("result", resFile)
         def args = task.getArgs()
-        assertTrue(String.join(" ", args), args.contains("-isource=" + new File("source.xml").absolutePath))
-        assertTrue(String.join(" ", args), args.contains("-oresult=" + new File("result.xml").absolutePath))
+
+        URI baseURI = URI.create("file:/root")
+
+        String srcOpt = "-isource=" + baseURI.resolve(srcFile.absolutePath).toASCIIString()
+        String resOpt = "-oresult=" + baseURI.resolve(resFile.absolutePath).toASCIIString()
+
+        // Reworked tests to avoid Java 8 String.join() method...
+        assertTrue(args.get(0).equals(srcOpt) || args.get(0).equals(resOpt))
+        assertTrue(args.get(1).equals(srcOpt) || args.get(1).equals(resOpt))
+        assertTrue(!args.get(0).equals(args.get(1)))
     }
 }

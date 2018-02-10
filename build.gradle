@@ -1,6 +1,3 @@
-import groovy.swing.SwingBuilder
-import java.awt.Point
-
 plugins {
   id "groovy"
   id "osgi"
@@ -12,17 +9,6 @@ repositories {
   maven { url uri('/tmp/repo') }
   mavenLocal()
   mavenCentral()
-  maven { url "http://maven.restlet.org" }
-  maven { url "http://developer.marklogic.com/maven2" }
-  maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-}
-
-configurations.all {
-  resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-    if (details.requested.name == 'saxon' && details.requested.version == '8.7') {
-      details.useTarget "net.sf.saxon:Saxon-HE:" + saxonVersion
-    }
-  }
 }
 
 dependencies {
@@ -30,17 +16,13 @@ dependencies {
     compile localGroovy()
     compile (
       [group: 'net.sf.saxon', name: 'Saxon-HE', version: saxonVersion],
-      [group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.1.9-96']
+      [group: 'com.xmlcalabash', name: 'xmlcalabash', version: xmlCalabashVersion]
     )
 
     testCompile (
-      [group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.1.9-96'],
+      [group: 'com.xmlcalabash', name: 'xmlcalabash', version: xmlCalabashVersion],
       [group: 'junit', name: 'junit', version: '4.12']
     )
-
-    testCompile( 'org.spockframework:spock-core:1.0-groovy-2.4') {
-      exclude group: 'org.codehaus.groovy'
-    }
 }
 
 // Variables
@@ -93,8 +75,11 @@ task copyJavaDoc(dependsOn: javadoc, type: Copy) {
   into "build/dist/docs"
 }
 
-task makeDist(dependsOn: [build, copyJar]) << {
-  println "Created distribution in build/dist"
+task makeDist(dependsOn: [build, copyJar]) {
+    // nop
+}
+makeDist.doLast {
+    println "Created distribution in build/dist"
 }
 
 task zipDist(dependsOn: makeDist, type: Zip) {
@@ -103,7 +88,7 @@ task zipDist(dependsOn: makeDist, type: Zip) {
   archiveName 'xmlcalabash1-gradle-' + distVersion + ".zip"
 }
 
-task dist(dependsOn: [zipDist]) << {
+task dist(dependsOn: [zipDist]) {
   // nop
 }
 
@@ -112,6 +97,11 @@ artifacts {
   archives jar
   archives sourcesJar
   archives groovydocJar
+}
+
+signing {
+  required { gradle.taskGraph.hasTask("uploadArchives") }
+  sign configurations.archives
 }
 
 /*
@@ -123,11 +113,6 @@ uploadArchives {
     }
 }
 */
-
-signing {
-  required { gradle.taskGraph.hasTask("uploadArchives") }
-  sign configurations.archives
-}
 
 uploadArchives {
   repositories {

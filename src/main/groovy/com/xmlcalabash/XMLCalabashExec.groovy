@@ -1,13 +1,6 @@
 package com.xmlcalabash
 
-import org.gradle.api.InvalidUserDataException
-import org.gradle.api.Project
-import org.gradle.api.internal.ConventionTask;
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.JavaExec
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.TaskInstantiationException
 import org.gradle.process.JavaExecSpec
 
 class XMLCalabashExec extends JavaExec {
@@ -30,6 +23,8 @@ class XMLCalabashExec extends JavaExec {
     private String profile = null
     private String edition = null
 
+    private URI baseURI = project.getProjectDir().toURI();
+
     XMLCalabashExec() {
         super()
         super.setMain 'com.xmlcalabash.drivers.Main'
@@ -40,7 +35,7 @@ class XMLCalabashExec extends JavaExec {
     }
 
     JavaExecSpec setPipeline(String pipeline) {
-        this.pipeline = pipeline
+        this.pipeline = baseURI.resolve(pipeline).toASCIIString()
         return this
     }
 
@@ -134,7 +129,7 @@ class XMLCalabashExec extends JavaExec {
     }
 
     JavaExecSpec setLibrary(String library) {
-        this.library = library
+        this.library = baseURI.resolve(library).toASCIIString()
         return this
     }
 
@@ -152,7 +147,7 @@ class XMLCalabashExec extends JavaExec {
     }
 
     String input(String port, String filename) {
-        inputs.add("-i" + port + "=" + filename)
+        inputs.add("-i" + port + "=" + baseURI.resolve(filename).toASCIIString())
     }
 
     String dataInput(String port, File file) {
@@ -160,14 +155,15 @@ class XMLCalabashExec extends JavaExec {
     }
 
     String dataInput(String port, String filename) {
-        dataInput(port, filename, null)
+        dataInput(port, baseURI.resolve(filename).toASCIIString(), null)
     }
 
     String dataInput(String port, String filename, String contentType) {
+        String fn = baseURI.resolve(filename).toASCIIString()
         if (contentType == null) {
-            inputs.add("-d" + port + "=" + filename)
+            inputs.add("-d" + port + "=" + fn)
         } else {
-            inputs.add("-d" + port + "=" + contentType + "@" + filename)
+            inputs.add("-d" + port + "=" + contentType + "@" + fn)
         }
     }
 
@@ -176,7 +172,7 @@ class XMLCalabashExec extends JavaExec {
     }
 
     String output(String port, String filename) {
-        outputs.add("-o" + port + "=" + filename)
+        outputs.add("-o" + port + "=" + baseURI.resolve(filename).toASCIIString())
     }
 
     String param(String qname, String value) {

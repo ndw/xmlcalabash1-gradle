@@ -1,17 +1,8 @@
 package com.xmlcalabash
 
 import com.xmlcalabash.drivers.Main
-import com.xmlcalabash.util.ParseArgs
-import com.xmlcalabash.util.UserArgs
-import org.gradle.api.internal.ConventionTask;
+import org.gradle.api.internal.ConventionTask
 import org.gradle.api.tasks.TaskAction
-
-import com.xmlcalabash.core.XProcConfiguration;
-import com.xmlcalabash.core.XProcRuntime;
-import com.xmlcalabash.model.RuntimeValue;
-import com.xmlcalabash.runtime.XPipeline;
-import net.sf.saxon.s9api.QName;
-import net.sf.saxon.s9api.XdmNode;
 
 class XMLCalabashTask extends ConventionTask {
     private boolean schemaAware = false
@@ -33,6 +24,8 @@ class XMLCalabashTask extends ConventionTask {
     private String profile = null
     private String edition = null
 
+    private URI baseURI = project.getProjectDir().toURI();
+
     XMLCalabashTask() {
     }
 
@@ -41,7 +34,7 @@ class XMLCalabashTask extends ConventionTask {
     }
 
     def setPipeline(String pipeline) {
-        this.pipeline = pipeline
+        this.pipeline = baseURI.resolve(pipeline).toASCIIString()
         return this
     }
 
@@ -135,7 +128,7 @@ class XMLCalabashTask extends ConventionTask {
     }
 
     def setLibrary(String library) {
-        this.library = library
+        this.library = baseURI.resolve(library).toASCIIString()
         return this
     }
 
@@ -153,7 +146,7 @@ class XMLCalabashTask extends ConventionTask {
     }
 
     String input(String port, String filename) {
-        inputs.add("-i" + port + "=" + filename)
+        inputs.add("-i" + port + "=" + baseURI.resolve(filename).toASCIIString())
     }
 
     String dataInput(String port, File file) {
@@ -161,14 +154,16 @@ class XMLCalabashTask extends ConventionTask {
     }
 
     String dataInput(String port, String filename) {
-        dataInput(port, filename, null)
+        dataInput(port, baseURI.resolve(filename).toASCIIString(), null)
     }
 
     String dataInput(String port, String filename, String contentType) {
+        String fn = baseURI.resolve(filename).toASCIIString()
+
         if (contentType == null) {
-            inputs.add("-d" + port + "=" + filename)
+            inputs.add("-d" + port + "=" + fn)
         } else {
-            inputs.add("-d" + port + "=" + contentType + "@" + filename)
+            inputs.add("-d" + port + "=" + contentType + "@" + fn)
         }
     }
 
@@ -177,7 +172,7 @@ class XMLCalabashTask extends ConventionTask {
     }
 
     String output(String port, String filename) {
-        outputs.add("-o" + port + "=" + filename)
+        outputs.add("-o" + port + "=" + baseURI.resolve(filename).toASCIIString())
     }
 
     String param(String qname, String value) {
