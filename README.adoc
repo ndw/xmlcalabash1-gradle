@@ -1,7 +1,14 @@
 = XML Calabash 1.0 Gradle Plugins
 
-This project provides two Gradle plugins to run XML Calbash. Simply include
-the dependencies in the buildscript:
+This project provides two Gradle plugins to run XML Calabash.
+
+Version 1.2 introduces a backwards incompatible change: all input,
+output, and pipeline filenames are now resolved against the location
+of the task. This means that the filenames are relative to the
+location of the `build.gradle` file, not the current working
+directory.
+
+To use the plugin, simply include the dependencies in the buildscript:
 
 ----
 buildscript {
@@ -10,8 +17,8 @@ buildscript {
   }
 
   dependencies {
-    classpath group: 'com.xmlcalabash', name: 'gradle', version: '0.0.2'
-    classpath group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.1.7-96'
+    classpath group: 'com.xmlcalabash', name: 'gradle', version: '1.2.1'
+    classpath group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.1.16-96'
   }
 }
 ----
@@ -93,7 +100,7 @@ Or running in the same VM:
 ----
 dependencies {
   compile (
-    [group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.1.7-96'],
+    [group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.1.16-96'],
   )
 }
 
@@ -115,5 +122,3 @@ to the task (which runs in the same VM).
 (I don’t know why you have to fully qualify the types, in theory
 just `XMLCalabashExec` or `XMLCalabashTask` should work. But they don’t
 at the moment.)
-
-
