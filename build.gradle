@@ -9,7 +9,6 @@ repositories {
   maven { url uri('/tmp/repo') }
   mavenLocal()
   mavenCentral()
-  maven { url "http://maven.restlet.org" }
 }
 
 dependencies {
