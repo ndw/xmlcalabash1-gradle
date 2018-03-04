@@ -2,6 +2,7 @@ plugins {
   id "groovy"
   id "osgi"
   id "maven"
+  id "maven-publish"
   id "signing"
 }
 
@@ -105,15 +106,21 @@ signing {
   sign configurations.archives
 }
 
-/*
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri('/tmp/repo'))
-        }
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      groupId group
+      artifactId 'xmlcalabash1-gradle'
+      version version
+      from components.java
     }
+  }
+  repositories {
+    maven {
+      url 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+    }
+  }
 }
-*/
 
 uploadArchives {
   repositories {
@@ -165,3 +172,4 @@ uploadArchives {
     }
   }
 }
+
