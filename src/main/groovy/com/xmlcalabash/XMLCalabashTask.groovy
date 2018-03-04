@@ -63,6 +63,7 @@ class XMLCalabashTask extends ConventionTask {
 
     def setPipeline(String pipeline) {
         pipelineURI = baseURI.resolve(pipeline).toASCIIString()
+        getInputs().file(pipelineURI)
         return this
     }
 
@@ -177,10 +178,12 @@ class XMLCalabashTask extends ConventionTask {
         return step
     }
 
+    /* Remove step property until issue #4 is fixed
     def setStep(String qname) {
         step = qname
         return this
     }
+    */
 
     def input(String port, File file) {
         input(port, file.getAbsolutePath())
