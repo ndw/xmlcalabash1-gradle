@@ -44,14 +44,13 @@ class XMLCalabashTask extends ConventionTask {
     protected boolean useXslt10 = false
     protected boolean htmlSerializer = false;
     protected UserArgs userArgs = null
+    protected Hashtable<String,String> seenOptions = new Hashtable<String, String> ();
     protected URI baseURI = project.getProjectDir().toURI();
 
     protected XProcConfiguration xprocConfiguration = null
     protected XProcRuntime runtime = null
     protected XPipeline pipeline = null
     protected Map<String, Output> portOutputs = null
-
-
 
     XMLCalabashTask() {
         userArgs = new UserArgs()
@@ -248,6 +247,7 @@ class XMLCalabashTask extends ConventionTask {
 
     def option(String qname, String value) {
         userArgs.addOption(qname, value)
+        seenOptions.put(qname, value)
         return this
     }
 
