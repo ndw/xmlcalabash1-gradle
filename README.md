@@ -51,44 +51,44 @@ task myTask(type: XMLCalabashTask) {
 The following properties are supported:
 
 <dl>
-<dt><code>pipeline</code></dt>
+<dt>pipeline</dt>
 <dd>The filename (URI) of the pipeline to run (string, required).</dd>
-<dt><code>debugPipeline</code></dt>
+<dt>debugPipeline</dt>
 <dd>Enable debug mode (boolean)</dd>
-<dt><code>safeMode</code></dt>
+<dt>safeMode</dt>
 <dd>Enable safe mode (boolean)</dd>
-<dt><code>profilePipeline</code></dt>
+<dt>profilePipeline</dt>
 <dd>Name of the file to use for writing profile information (string)</dd>
-<dt><code>saxonEdition</code></dt>
+<dt>saxonEdition</dt>
 <dd>Saxon edition (string: “he”, “pe”, or “ee”; defaults to “he”)</dd>
-<dt><code>schemaAware</code></dt>
+<dt>schemaAware</dt>
 <dd>Schema aware processing (boolean, requires “pe” or “ee” edition)</dd>
-<dt><code>entityResolver</code></dt>
+<dt>entityResolver</dt>
 <dd>Name of entity resolver class (string)</dd>
-<dt><code>uriResolver</code></dt>
+<dt>uriResolver</dt>
 <dd>Name of URI resolver class (string)</dd>
-<dt><code>configFile</code></dt>
+<dt>configFile</dt>
 <dd>Filename of the XML Calabash configuration file (string;
     defaults to `$HOME/.calabash`)</dd>
-<dt><code>saxonConfigFile</code></dt>
+<dt>saxonConfigFile</dt>
 <dd>Filename of the Saxon Configuration file (string)</dd>
-<dt><code>library</code></dt>
+<dt>library</dt>
 <dd>Library to load (string)</dd>
-<dt><code>step</code></dt>
+<dt>step</dt>
 <dd>Step to run (QName). _N.B._ This option is currently unavailable.</dd>
-<dt><code>extensionValues</code></dt>
+<dt>extensionValues</dt>
 <dd>Enable the “general-values” extension (boolean)</dd>
-<dt><code>xpointerOnText</code></dt>
+<dt>xpointerOnText</dt>
 <dd>Enable the “xpointer-on-text” extension (boolean)</dd>
-<dt><code>transparentJson</code></dt>
+<dt>transparentJson</dt>
 <dd>Enable the “transparent-json” extension (boolean)</dd>
-<dt><code>jsonFlavor</code></dt>
+<dt>jsonFlavor</dt>
 <dd>Identify the preferred flavor of JSON-to-XML conversion (string)</dd>
-<dt><code>allowTextResults</code></dt>
+<dt>allowTextResults</dt>
 <dd>Allow steps to produce documents that consist of a single text node (boolean)</dd>
-<dt><code>useXslt10</code></dt>
+<dt>useXslt10</dt>
 <dd>Enable the “use-xslt-1.0” extension (boolean)</dd>
-<dd>htmlSerializer</dd>
+<dt>htmlSerializer</dt>
 <dd>Set the preferred HTML serializer (string)</dd>
 </dl>
 
@@ -97,25 +97,25 @@ The following properties are supported:
 In addition, the following methods may be called:
 
 <dl>
-<dt><code>namespaceBinding(String prefix, String uri)</code></dt>
+<dt>namespaceBinding(String prefix, String uri)</dt>
 <dd>Establish the namespace binding between `prefix` and `uri`
 for evaluating QNames specified in other properties and methods.</dd>
-<dt><code>input(String port, String filename)</code></dt>
+<dt>input(String port, String filename)</dt>
 <dd>Send the XML document identified by `filename` (URI) to the port named `port`.</dd>
-<dt><code>dataInput(String port, String filename)</code></dt>
+<dt>dataInput(String port, String filename)</dt>
 <dd>Send the non-XML document identified by `filename` (URI) to the port named `port`.</dd>
-<dt><code>dataInput(String port, String filename, String contentType)</code></dt>
+<dt>dataInput(String port, String filename, String contentType)</dt>
 <dd>Send the non-XML document identified by `filename` (URI) to the port named `port`
 with the explicit content type specified in `contentType`.</dd>
-<dt><code>output(String port, String filename)</code></dt>
+<dt>output(String port, String filename)</dt>
 <dd>Send the output from the port named `port` to the filename identified by `filename`.</dd>
-<dt><code>param(String qname, String<sup>*</sup> value)</code></dt>
+<dt>param(String qname, String<sup>*</sup> value)</dt>
 <dd>Send the `qname` parameter with the value `value` to the primary
 parameter input port on the pipeline.</dd>
-<dt><code>param(String qname, String<sup>*</sup> value, String port)</code></dt>
+<dt>param(String qname, String<sup>*</sup> value, String port)</dt>
 <dd>Send the `qname` parameter with the value `value` to the `port` parameter
 input port on the pipeline.</dd>
-<dt><code>option(String qname, String<sup>*</sup> value)</code></dt>
+<dt>option(String qname, String<sup>*</sup> value)</dt>
 <dd>Send the option `qname` to the pipeline with the value `value`.</dd>
 </dl>
 
