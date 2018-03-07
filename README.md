@@ -69,7 +69,7 @@ The following properties are supported:
 <dd>Name of URI resolver class (string)</dd>
 <dt>configFile</dt>
 <dd>Filename of the XML Calabash configuration file (string;
-    defaults to `$HOME/.calabash`)</dd>
+    defaults to <code>$HOME/.calabash</code>)</dd>
 <dt>saxonConfigFile</dt>
 <dd>Filename of the Saxon Configuration file (string)</dd>
 <dt>library</dt>
@@ -98,25 +98,25 @@ In addition, the following methods may be called:
 
 <dl>
 <dt>namespaceBinding(String prefix, String uri)</dt>
-<dd>Establish the namespace binding between `prefix` and `uri`
+<dd>Establish the namespace binding between <code>prefix</code> and <code>uri</code>
 for evaluating QNames specified in other properties and methods.</dd>
 <dt>input(String port, String filename)</dt>
-<dd>Send the XML document identified by `filename` (URI) to the port named `port`.</dd>
+<dd>Send the XML document identified by <code>filename</code> (URI) to the port named <code>port</code>.</dd>
 <dt>dataInput(String port, String filename)</dt>
-<dd>Send the non-XML document identified by `filename` (URI) to the port named `port`.</dd>
+<dd>Send the non-XML document identified by <code>filename</code> (URI) to the port named <code>port</code>.</dd>
 <dt>dataInput(String port, String filename, String contentType)</dt>
-<dd>Send the non-XML document identified by `filename` (URI) to the port named `port`
-with the explicit content type specified in `contentType`.</dd>
+<dd>Send the non-XML document identified by <code>filename</code> (URI) to the port named <code>port</code>
+with the explicit content type specified in <code>contentType</code>.</dd>
 <dt>output(String port, String filename)</dt>
-<dd>Send the output from the port named `port` to the filename identified by `filename`.</dd>
+<dd>Send the output from the port named <code>port</code> to the filename identified by <code>filename</code>.</dd>
 <dt>param(String qname, String<sup>*</sup> value)</dt>
-<dd>Send the `qname` parameter with the value `value` to the primary
+<dd>Send the <code>qname</code> parameter with the value <code>value</code> to the primary
 parameter input port on the pipeline.</dd>
 <dt>param(String qname, String<sup>*</sup> value, String port)</dt>
-<dd>Send the `qname` parameter with the value `value` to the `port` parameter
+<dd>Send the <code>qname</code> parameter with the value <code>value</code> to the <code>port</code> parameter
 input port on the pipeline.</dd>
 <dt>option(String qname, String<sup>*</sup> value)</dt>
-<dd>Send the option `qname` to the pipeline with the value `value`.</dd>
+<dd>Send the option <code>qname</code> to the pipeline with the value <code>value</code>.</dd>
 </dl>
 
 The `input`, `dataInput`, and `output` methods automatically register
