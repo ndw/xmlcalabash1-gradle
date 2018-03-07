@@ -106,15 +106,6 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
-    String getProcessor() {
-        return proctype
-    }
-
-    def setProcessor(String ptype) {
-        proctype = ptype
-        return this
-    }
-
     boolean getSchemaAware() {
         return schemaAware
     }
@@ -142,8 +133,9 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
-    void namespaceBinding(String prefix, String uri) {
+    def namespaceBinding(String prefix, String uri) {
         nsBindings.put(prefix,uri)
+        return this
     }
 
     String getConfigFile() {
@@ -185,7 +177,7 @@ class XMLCalabashTask extends ConventionTask {
     */
 
     def input(String port, File file) {
-        input(port, file.getAbsolutePath())
+        return input(port, file.getAbsolutePath())
     }
 
     def input(String port, String filename) {
@@ -198,11 +190,11 @@ class XMLCalabashTask extends ConventionTask {
     }
 
     def dataInput(String port, File file) {
-        dataInput(port, file.absolutePath)
+        return dataInput(port, file.absolutePath)
     }
 
     def dataInput(String port, String filename) {
-        dataInput(port, filename, null)
+        return dataInput(port, filename, null)
     }
 
     def dataInput(String port, String filename, String contentType) {
@@ -220,7 +212,7 @@ class XMLCalabashTask extends ConventionTask {
     }
 
     def output(String port, File file) {
-        output(port, file.absolutePath)
+        return output(port, file.absolutePath)
     }
 
     def output(String port, String filename) {
@@ -232,11 +224,49 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    def param(String qname, File file) {
+        return param(qname, file, null)
+    }
+
+    def param(String qname, File file, String port) {
+        String value = file.getAbsolutePath()
+        getInputs().file(value)
+        return param(qname, value, port)
+    }
+
+    def param(String qname, Integer value) {
+        return param(qname, value.toString(), null)
+    }
+
+    def param(String qname, Integer value, String port) {
+        return setParam(qname, value.toString(), "xs:integer", port)
+    }
+
+    def param(String qname, Float value) {
+        return param(qname, value.toString(), null)
+    }
+
+    def param(String qname, Float value, String port) {
+        return setParam(qname, value.toString(), "xs:float", port)
+    }
+
+    def param(String qname, Boolean value) {
+        return param(qname, value.toString(), null)
+    }
+
+    def param(String qname, Boolean value, String port) {
+        return setParam(qname, value.toString(), "xs:boolean", port)
+    }
+
     def param(String qname, String value) {
-        param(qname, value, null)
+        return param(qname, value, null)
     }
 
     def param(String qname, String value, String port) {
+        return setParam(qname, value, "xs:string", port)
+    }
+
+    private XMLCalabashTask setParam(String qname, String value, String type, String port) {
         if (port == null) {
             userArgs.addParam(qname, value)
         } else {
@@ -245,7 +275,29 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    def option(String qname, File file) {
+        String value = file.getAbsolutePath()
+        getInputs().file(value)
+        return setOption(qname, value, "xs:string")
+    }
+
     def option(String qname, String value) {
+        return setOption(qname, value, "xs:string")
+    }
+
+    def option(String qname, Integer value) {
+        return setOption(qname, value.toString(), "xs:integer")
+    }
+
+    def option(String qname, Float value) {
+        return setOption(qname, value.toString(), "xs:float")
+    }
+
+    def option(String qname, Boolean value) {
+        return setOption(qname, value.toString(), "xs:boolean")
+    }
+
+    private XMLCalabashTask setOption(String qname, String value, String type) {
         userArgs.addOption(qname, value)
         seenOptions.put(qname, value)
         return this
