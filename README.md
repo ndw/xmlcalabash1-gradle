@@ -109,13 +109,13 @@ for evaluating QNames specified in other properties and methods.</dd>
 with the explicit content type specified in <code>contentType</code>.</dd>
 <dt>output(String port, String filename)</dt>
 <dd>Send the output from the port named <code>port</code> to the filename identified by <code>filename</code>.</dd>
-<dt>param(String qname, String<sup>†</sup> value)</dt>
+<dt>param(String qname, String<sup><a href="#types">†</a></sup> value)</dt>
 <dd>Send the <code>qname</code> parameter with the value <code>value</code> to the primary
 parameter input port on the pipeline.</dd>
-<dt>param(String qname, String<sup>†</sup> value, String port)</dt>
+<dt>param(String qname, String<sup><a href="#types">†</a></sup> value, String port)</dt>
 <dd>Send the <code>qname</code> parameter with the value <code>value</code> to the <code>port</code> parameter
 input port on the pipeline.</dd>
-<dt>option(String qname, String<sup>†</sup> value)</dt>
+<dt>option(String qname, String<sup><a href="#types">†</a></sup> value)</dt>
 <dd>Send the option <code>qname</code> to the pipeline with the value <code>value</code>.</dd>
 </dl>
 
@@ -124,7 +124,8 @@ their filename argument as an input (or output) to the task. Gradle
 will cache this information for the purpose of working out what other
 tasks may need to be run.
 
-<sup><b>†</b></sup> The parameter and option methods take `String`, `Boolean`, `Integer`,
+<sup id="types"><b>†</b></sup> The parameter and option methods
+take `String`, `Boolean`, `Integer`,
 `Float`, and `File` values. For clarity, only the string signatures are shown above.
 If a `File` value is given, the file is registered as an input to the task
 and the absolute path of the file is sent to the pipeline as the value of
