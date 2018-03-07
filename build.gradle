@@ -117,7 +117,7 @@ publishing {
   }
   repositories {
     maven {
-      url 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+      url 'file:///tmp/repo'
     }
   }
 }
