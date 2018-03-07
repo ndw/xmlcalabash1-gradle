@@ -124,7 +124,7 @@ their filename argument as an input (or output) to the task. Gradle
 will cache this information for the purpose of working out what other
 tasks may need to be run.
 
-<sup>†</sup> The parameter and option methods take `String`, `Boolean`, `Integer`,
+<sup><b>†</b></sup> The parameter and option methods take `String`, `Boolean`, `Integer`,
 `Float`, and `File` values. For clarity, only the string signatures are shown above.
 If a `File` value is given, the file is registered as an input to the task
 and the absolute path of the file is sent to the pipeline as the value of
