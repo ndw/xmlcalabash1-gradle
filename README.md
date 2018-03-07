@@ -146,4 +146,5 @@ task myTask(type: XMLCalabashTask) {
 ## Example
 
 There’s a simple example of a build script that uses the `XMLCalabashTask`
-in the `gradletest/` directory of this repository.
+in the `[gradletest/](https://github.com/ndw/xmlcalabash1-gradle/tree/master/gradletest)`
+directory of this repository.
