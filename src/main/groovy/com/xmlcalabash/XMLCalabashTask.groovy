@@ -231,7 +231,7 @@ class XMLCalabashTask extends ConventionTask {
     def param(String qname, File file, String port) {
         String value = file.getAbsolutePath()
         getInputs().file(value)
-        return param(qname, value, port)
+        return param(qname, file.toURI().toASCIIString(), port)
     }
 
     def param(String qname, Integer value) {
@@ -266,6 +266,22 @@ class XMLCalabashTask extends ConventionTask {
         return setParam(qname, value, "xs:string", port)
     }
 
+    def param(String qname, URL value) {
+        return param(qname, value, null)
+    }
+
+    def param(String qname, URL value, String port) {
+        return setParam(qname, value.toString(), "xs:anyURI", port)
+    }
+
+    def param(String qname, URI value) {
+        return param(qname, value, null)
+    }
+
+    def param(String qname, URI value, String port) {
+        return setParam(qname, value.toASCIIString(), "xs:anyURI", port)
+    }
+
     private XMLCalabashTask setParam(String qname, String value, String type, String port) {
         if (port == null) {
             userArgs.addParam(qname, value)
@@ -278,11 +294,19 @@ class XMLCalabashTask extends ConventionTask {
     def option(String qname, File file) {
         String value = file.getAbsolutePath()
         getInputs().file(value)
-        return setOption(qname, value, "xs:string")
+        return setOption(qname, file.toURI().toASCIIString(), "xs:anyURI")
     }
 
     def option(String qname, String value) {
         return setOption(qname, value, "xs:string")
+    }
+
+    def option(String qname, URI value) {
+        return setOption(qname, value.toASCIIString(), "xs:anyURI")
+    }
+
+    def option(String qname, URL value) {
+        return setOption(qname, value.toString(), "xs:anyURI")
     }
 
     def option(String qname, Integer value) {
