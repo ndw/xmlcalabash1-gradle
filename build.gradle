@@ -1,15 +1,15 @@
 plugins {
-  id "groovy"
-  id "osgi"
-  id "maven"
-  id "maven-publish"
-  id "signing"
+  id 'groovy'
+  id 'osgi'
+  id 'maven'
+  id 'maven-publish'
+  id 'signing'
 }
 
 repositories {
   mavenLocal()
   mavenCentral()
-  maven { url "http://maven.restlet.org" }
+  maven { url 'http://maven.restlet.org' }
 }
 
 dependencies {
@@ -67,26 +67,26 @@ task sourcesJar(type: Jar) {
 }
 
 task copyJar(dependsOn: jar, type: Copy) {
-  from "build/libs/xmlcalabash1-gradle-" + distVersion + ".jar"
-  into "build/dist"
+  from 'build/libs/xmlcalabash1-gradle-' + distVersion + '.jar'
+  into 'build/dist'
 }
 
 task copyJavaDoc(dependsOn: javadoc, type: Copy) {
-  from "build/docs"
-  into "build/dist/docs"
+  from 'build/docs'
+  into 'build/dist/docs'
 }
 
 task makeDist(dependsOn: [build, copyJar]) {
     // nop
 }
 makeDist.doLast {
-    println "Created distribution in build/dist"
+    println 'Created distribution in build/dist'
 }
 
 task zipDist(dependsOn: makeDist, type: Zip) {
   from('build/dist')
   into 'xmlcalabash1-gradle-' + distVersion
-  archiveName 'xmlcalabash1-gradle-' + distVersion + ".zip"
+  archiveName 'xmlcalabash1-gradle-' + distVersion + '.zip'
 }
 
 task dist(dependsOn: [zipDist]) {
@@ -101,7 +101,7 @@ artifacts {
 }
 
 signing {
-  required { gradle.taskGraph.hasTask("uploadArchives") }
+  required { gradle.taskGraph.hasTask('uploadArchives') }
   sign configurations.archives
 }
 
@@ -129,11 +129,11 @@ uploadArchives {
       }
       
       if (ext.has('sonatypeUsername') && ext.has('sonatypePassword')) {
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
           authentication(userName: sonatypeUsername, password: sonatypePassword)
         }
 
-        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
           authentication(userName: sonatypeUsername, password: sonatypePassword)
         }
       }

@@ -2,7 +2,7 @@ buildscript {
   repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "http://maven.restlet.org" }
+    maven { url 'http://maven.restlet.org' }
   }
 
   dependencies {
@@ -19,11 +19,11 @@ apply plugin: 'com.xmlcalabash.task'
 import com.xmlcalabash.XMLCalabashTask
 
 task testTask(type: XMLCalabashTask) {
-  input("source", "input.xml")
-  output("result", "output.xml")
-  param("string", "string")
-  inputs.file "pipeline.xpl"
-  param('file', "pipeline.xpl")
+  input('source', 'input.xml')
+  output('result', 'output.xml')
+  param('string', 'string')
+  inputs.file 'pipeline.xpl'
+  param('file', 'pipeline.xpl')
   param('number', 3)
-  pipeline("pipeline.xpl")
+  pipeline('pipeline.xpl')
 }
