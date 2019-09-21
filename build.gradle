@@ -1,6 +1,12 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+}
+
 plugins {
   id 'groovy'
-  id 'osgi'
+  id 'biz.aQute.bnd.builder' version '4.2.0'
   id 'maven'
   id 'maven-publish'
   id 'signing'
@@ -37,16 +43,15 @@ task groovydocJar(type: Jar, dependsOn: groovydoc) {
   from groovydoc.destinationDir
 }
 
+
 jar {
-  manifest {
-    instruction 'Built-By', builtBy
-    instruction 'Implementation-Vendor', 'Norman Walsh'
-    instruction 'Implementation-Title', 'XML Calabash Gradle Tasks'
-    instruction 'Implementation-Version', distVersion
-    instruction 'Bundle-SymbolicName', 'com.xmlcalabash.XMLCalabashPlugin'
-    instruction 'Bundle-RequiredExecutionEnvironment', 'J2SE-1.7'
-    instruction 'Export-Package', '*, etc'
-  }
+  bnd ('Built-By': builtBy,
+       'Implementation-Vendor': 'Norman Walsh',
+       'Implementation-Title': 'XML Calabash Gradle Tasks',
+       'Implementation-Version': distVersion,
+       'Bundle-SymbolicName': 'com.xmlcalabash.XMLCalabashPlugin',
+       'Bundle-RequiredExecutionEnvironment': 'J2SE-1.7',
+       'Export-Package': '*, etc')
 }
 
 task copyStuff(type: Copy) {
