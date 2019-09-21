@@ -1,8 +1,7 @@
 buildscript {
   repositories {
     mavenLocal()
-    mavenCentral()
-    maven { url 'http://maven.restlet.org' }
+    jcenter()
   }
 
   dependencies {
@@ -11,7 +10,7 @@ buildscript {
 }
 
 repositories {
-  mavenCentral()
+  jcenter()
 }
 
 apply plugin: 'com.xmlcalabash.task'

@@ -14,8 +14,7 @@ plugins {
 
 repositories {
   mavenLocal()
-  mavenCentral()
-  maven { url 'http://maven.restlet.org' }
+  jcenter()
 }
 
 dependencies {
@@ -117,11 +116,6 @@ publishing {
       artifactId 'xmlcalabash1-gradle'
       version version
       from components.java
-    }
-  }
-  repositories {
-    maven {
-      url 'file:///home/ndw/.m2/repository'
     }
   }
 }
