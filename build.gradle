@@ -97,6 +97,10 @@ task dist(dependsOn: [zipDist]) {
   // nop
 }
 
+wrapper {
+  distributionType = Wrapper.DistributionType.ALL
+  gradleVersion = '5.6.2'
+}
 
 artifacts {
   archives jar
