@@ -19,14 +19,15 @@ class XMLCalabashTaskTest {
         Project project = ProjectBuilder.builder().build()
         def task = project.task('calabash', type: XMLCalabashTask)
 
-        File pipeFile = new File("pipe.xpl")
-        File srcFile = new File("source.xml")
-        File resFile = new File ("result.xml")
+        String cwd = System.getProperty("user.dir")
+        File pipeFile = new File(cwd + "/src/test/resources/pipe.xpl")
+        File srcFile = new File(cwd + "/src/test/resources/source.xml")
+        File resFile = new File (cwd + "/build/test-canUseFile-output.xml")
 
         task.pipeline = pipeFile
         task.input("source", srcFile)
         task.output("result", resFile)
 
-        // FIXME: this test is now vaccuous.
+        // FIXME: this test is now vacuous.
     }
 }
