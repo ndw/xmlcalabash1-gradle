@@ -95,7 +95,6 @@ task dist(dependsOn: [zipDist]) {
 
 
 artifacts {
-  archives jar
   archives sourcesJar
   archives groovydocJar
 }
