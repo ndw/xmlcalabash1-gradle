@@ -39,6 +39,7 @@ class XMLCalabashTask extends ConventionTask {
     protected boolean extensionValues = false
     protected boolean xpointerOnText = false
     protected boolean transparentJson = false
+    protected boolean ignoreInvalidXmlBase = false
     protected String jsonFlavor = null
     protected boolean allowTextResults = false
     protected boolean useXslt10 = false
@@ -336,6 +337,15 @@ class XMLCalabashTask extends ConventionTask {
         return extensionValues
     }
 
+    def setIgnoreInvalidXmlBase(boolean value) {
+        ignoreInvalidXmlBase = value
+        return this
+    }
+
+    boolean getIgnoreInvalidXmlBase() {
+        return ignoreInvalidXmlBase
+    }
+
     def setXPointerOnText(boolean value) {
         xpointerOnText = value
         return this
@@ -405,6 +415,7 @@ class XMLCalabashTask extends ConventionTask {
         userArgs.setSafeMode(getSafeMode())
         userArgs.setDebug(getDebugPipeline())
         userArgs.setExtensionValues(getExtensionValues())
+        userArgs.setIgnoreInvalidXmlBase(getIgnoreInvalidXmlBase())
         userArgs.setAllowXPointerOnText(getXPointerOnText())
         userArgs.setTransparentJSON(getTransparentJson())
         userArgs.setAllowTextResults(getAllowTextResults())
