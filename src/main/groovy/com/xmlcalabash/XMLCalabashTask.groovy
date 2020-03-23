@@ -16,7 +16,6 @@ import com.xmlcalabash.util.UserArgs
 import net.sf.saxon.s9api.QName
 import net.sf.saxon.s9api.XdmNode
 import org.gradle.api.internal.ConventionTask
-import org.gradle.api.tasks.TaskAction
 import org.xml.sax.InputSource
 
 import static com.xmlcalabash.core.XProcConstants.c_data
@@ -40,7 +39,10 @@ class XMLCalabashTask extends ConventionTask {
     protected boolean xpointerOnText = false
     protected boolean transparentJson = false
     protected boolean ignoreInvalidXmlBase = false
+
+    @org.gradle.api.tasks.Optional
     protected String jsonFlavor = null
+
     protected boolean allowTextResults = false
     protected boolean useXslt10 = false
     protected boolean htmlSerializer = false;
@@ -57,6 +59,7 @@ class XMLCalabashTask extends ConventionTask {
         userArgs = new UserArgs()
     }
 
+    @org.gradle.api.tasks.InputFile
     String getPipeline() {
         return pipelineURI
     }
@@ -67,15 +70,17 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
-    boolean getDebugPipeline() {
+    @org.gradle.api.tasks.Input
+    boolean getDebug() {
         return debug
     }
 
-    def setDebugPipeline(boolean debug) {
+    def setDebug(boolean debug) {
         this.debug = debug
         return this
     }
 
+    @org.gradle.api.tasks.Input
     boolean getSafeMode() {
         return safeMode
     }
@@ -85,6 +90,8 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
+    @org.gradle.api.tasks.Optional
     String getProfilePipeline() {
         return profile
     }
@@ -94,6 +101,8 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
+    @org.gradle.api.tasks.Optional
     String getSaxonEdition() {
         if (edition == null) {
             return "he"
@@ -107,6 +116,7 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
     boolean getSchemaAware() {
         return schemaAware
     }
@@ -116,6 +126,8 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
+    @org.gradle.api.tasks.Optional
     String getEntityResolver() {
         return entityResolver
     }
@@ -125,6 +137,8 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
+    @org.gradle.api.tasks.Optional
     String getUriResolver() {
         return uriResolver
     }
@@ -139,6 +153,8 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.InputFile
+    @org.gradle.api.tasks.Optional
     String getConfigFile() {
         return configFile
     }
@@ -148,6 +164,8 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.InputFile
+    @org.gradle.api.tasks.Optional
     String getSaxonConfigFile() {
         return saxonConfigFile
     }
@@ -157,6 +175,8 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.InputFile
+    @org.gradle.api.tasks.Optional
     String getLibrary() {
         return library
     }
@@ -166,6 +186,8 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
+    @org.gradle.api.tasks.Optional
     String getStep() {
         return step
     }
@@ -333,6 +355,7 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
     boolean getExtensionValues() {
         return extensionValues
     }
@@ -342,16 +365,18 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
     boolean getIgnoreInvalidXmlBase() {
         return ignoreInvalidXmlBase
     }
 
-    def setXPointerOnText(boolean value) {
+    def setXpointerOnText(boolean value) {
         xpointerOnText = value
         return this
     }
 
-    boolean getXPointerOnText() {
+    @org.gradle.api.tasks.Input
+    boolean getXpointerOnText() {
         return xpointerOnText
     }
 
@@ -360,6 +385,7 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
     boolean getTransparentJson() {
         return transparentJson
     }
@@ -369,6 +395,7 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
     String getJsonFlavor() {
         return jsonFlavor
     }
@@ -378,6 +405,7 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
     boolean getAllowTextResults() {
         return allowTextResults
     }
@@ -387,6 +415,7 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
     boolean getUseXslt10() {
         return useXslt10
     }
@@ -396,6 +425,7 @@ class XMLCalabashTask extends ConventionTask {
         return this
     }
 
+    @org.gradle.api.tasks.Input
     boolean getHtmlSerializer() {
         return htmlSerializer
     }
@@ -413,10 +443,10 @@ class XMLCalabashTask extends ConventionTask {
         userArgs.setSaxonProcessor(getSaxonEdition())
         userArgs.setSchemaAware(getSchemaAware())
         userArgs.setSafeMode(getSafeMode())
-        userArgs.setDebug(getDebugPipeline())
+        userArgs.setDebug(getDebug())
         userArgs.setExtensionValues(getExtensionValues())
         userArgs.setIgnoreInvalidXmlBase(getIgnoreInvalidXmlBase())
-        userArgs.setAllowXPointerOnText(getXPointerOnText())
+        userArgs.setAllowXPointerOnText(getXpointerOnText())
         userArgs.setTransparentJSON(getTransparentJson())
         userArgs.setAllowTextResults(getAllowTextResults())
         userArgs.setUseXslt10(getUseXslt10())
@@ -750,14 +780,14 @@ class XMLCalabashTask extends ConventionTask {
         }
     }
 
-    @TaskAction
+    @org.gradle.api.tasks.TaskAction
     void exec() {
         processInputs()
         pipeline.run()
         processOutputs()
     }
 
-    private void setParametersOnPipeline(XPipeline pipeline, String port, Map<QName, String> parameters) {
+    private static void setParametersOnPipeline(XPipeline pipeline, String port, Map<QName, String> parameters) {
         if ("*".equals(port)) {
             for (QName name : parameters.keySet()) {
                 pipeline.setParameter(name, new RuntimeValue(parameters.get(name)));
