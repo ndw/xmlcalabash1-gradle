@@ -1,28 +1,34 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+}
+
 plugins {
   id "groovy"
-  id "osgi"
-  id "maven"
   id "maven-publish"
   id "signing"
+  id 'de.fuerstenau.buildconfig' version '1.1.8'
 }
+
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 repositories {
   mavenLocal()
   mavenCentral()
-  maven { url "http://maven.restlet.org" }
+  maven { url "https://maven.restlet.org" }
 }
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    compile (
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation (
       [group: 'net.sf.saxon', name: 'Saxon-HE', version: saxonVersion],
       [group: 'com.xmlcalabash', name: 'xmlcalabash', version: xmlCalabashVersion]
-    )
-
-    testCompile (
-      [group: 'com.xmlcalabash', name: 'xmlcalabash', version: xmlCalabashVersion],
-      [group: 'junit', name: 'junit', version: '4.12']
     )
 }
 
@@ -33,20 +39,15 @@ project.ext.distVersion = version + snapshot
 version = project.ext.distVersion // - gets turned into . in some contexts
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
-  classifier = 'javadoc'
   from groovydoc.destinationDir
 }
 
-jar {
-  manifest {
-    instruction 'Built-By', builtBy
-    instruction 'Implementation-Vendor', 'Norman Walsh'
-    instruction 'Implementation-Title', 'XML Calabash Gradle Tasks'
-    instruction 'Implementation-Version', distVersion
-    instruction 'Bundle-SymbolicName', 'com.xmlcalabash.XMLCalabashPlugin'
-    instruction 'Bundle-RequiredExecutionEnvironment', 'J2SE-1.7'
-    instruction 'Export-Package', '*, etc'
-  }
+buildConfig {
+  appName = "XMLCalabashPlugin"
+  version = distVersion
+  clsName = 'BuildConfig'
+  packageName = "com.xmlcalabash.XMLCalabashPlugin"
+  charset = 'UTF-8'
 }
 
 task copyStuff(type: Copy) {
@@ -58,12 +59,10 @@ jar.dependsOn copyStuff
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     from tasks.javadoc.destinationDir
-    classifier = 'javadoc'
 }
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
-    classifier = 'sources'
 }
 
 task copyJar(dependsOn: jar, type: Copy) {
@@ -86,13 +85,14 @@ makeDist.doLast {
 task zipDist(dependsOn: makeDist, type: Zip) {
   from('build/dist')
   into 'xmlcalabash1-gradle-' + distVersion
-  archiveName 'xmlcalabash1-gradle-' + distVersion + ".zip"
+}
+zipDist.doLast {
+  println "Created ZIP archive"
 }
 
 task dist(dependsOn: [zipDist]) {
   // nop
 }
-
 
 artifacts {
   archives sourcesJar
@@ -107,67 +107,51 @@ signing {
 publishing {
   publications {
     mavenJava(MavenPublication) {
-      groupId group
-      artifactId 'xmlcalabash1-gradle'
-      version version
-      from components.java
-    }
-  }
-  repositories {
-    maven {
-      url 'file:///home/ndw/.m2/repository'
-    }
-  }
-}
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment ->
-        signing.signPom(deployment)
-      }
-
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: sonatypeUsername, password: sonatypePassword)
-      }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: sonatypeUsername, password: sonatypePassword)
-      }
-
-      pom.project {
-        name 'XML Calabash Gradle Plugin'
-        packaging 'jar'
-        description 'A Gradle Plugin for XML Calabash 1.x'
-        url 'https://github.com/ndw/xmlcalabash1-gradle'
+      pom {
+        name = 'XML Calabash Gradle Plugin'
+        description = 'XML Calabash Gradle Plugin'
+        url = 'https://github.com/ndw/xmlcalabash1-gradle'
 
         scm {
-          url 'scm:git@github.com:ndw/xmlcalabash1-gradle.git'
-          connection 'scm:git@github.com:ndw/xmlcalabash1-gradle.git'
-          developerConnection 'scm:git@github.com:ndw/xmlcalabash1-gradle.git'
+          url = 'scm:git@github.com:ndw/xmlcalabash1-gradle.git'
+          connection = 'scm:git@github.com:ndw/xmlcalabash1-gradle.git'
+          developerConnection = 'scm:git@github.com:ndw/xmlcalabash1-gradle.git'
         }
 
         licenses {
           license {
-            name 'Common Development and Distribution License (CDDL) version 1.0'
-            url 'http://www.opensource.org/licenses/cddl1.txt'
-            distribution 'repo'
+            name = 'Common Development and Distribution License (CDDL) version 1.0'
+            url = 'http://www.opensource.org/licenses/cddl1.txt'
+            distribution = 'repo'
           }
           license {
-            name 'GNU General Public License version 2'
-            url 'http://www.gnu.org/licenses/gpl-2.0.txt'
-            distribution 'repo'
+            name = 'GNU General Public License version 2'
+            url = 'http://www.gnu.org/licenses/gpl-2.0.txt'
+            distribution = 'repo'
           }
         }
-
         developers {
           developer {
-            id 'ndw'
-            name 'Norman Walsh'
+            id = 'ndw'
+            name = 'Norman Walsh'
           }
         }
+      }
+      groupId = 'com.xmlcalabash'
+      artifactId = 'xmlcalabash1-gradle'
+      version = version
+
+      from components.java
+    }
+  }
+
+  repositories {
+    maven {
+      url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      credentials {
+        username = sonatypeUsername
+        password = sonatypePassword
       }
     }
   }
 }
-
