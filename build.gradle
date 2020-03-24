@@ -38,8 +38,9 @@ project.ext.distVersion = version + snapshot
 
 version = project.ext.distVersion // - gets turned into . in some contexts
 
-task groovydocJar(type: Jar, dependsOn: groovydoc) {
+task groovydocsJar(type: Jar, dependsOn: groovydoc) {
   from groovydoc.destinationDir
+  archiveClassifier = "javadoc"
 }
 
 buildConfig {
@@ -57,12 +58,9 @@ task copyStuff(type: Copy) {
 }
 jar.dependsOn copyStuff
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    from tasks.javadoc.destinationDir
-}
-
 task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
+  from sourceSets.main.allSource
+  archiveClassifier = "sources"
 }
 
 task copyJar(dependsOn: jar, type: Copy) {
@@ -94,14 +92,8 @@ task dist(dependsOn: [zipDist]) {
   // nop
 }
 
-artifacts {
-  archives sourcesJar
-  archives groovydocJar
-}
-
 signing {
-  required { gradle.taskGraph.hasTask("uploadArchives") }
-  sign configurations.archives
+  sign publishing.publications
 }
 
 publishing {
@@ -142,10 +134,17 @@ publishing {
       version = version
 
       from components.java
+      artifact groovydocsJar
+      artifact sourcesJar
     }
   }
 
   repositories {
+/*
+    maven {
+      url = "file:///tmp/x/repo"
+    }
+*/
     maven {
       url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
       credentials {
