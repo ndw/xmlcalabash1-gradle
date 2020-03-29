@@ -1,0 +1,55 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://maven.restlet.org" }
+    maven { url "file://tmp/repo" }
+  }
+
+  // Get rid of that [expletive deleted] warning about xml-apis 2.0.2/1.0.b2
+  configurations.all {
+    resolutionStrategy {
+      force 'xml-apis:xml-apis:1.4.01'
+    }
+  }
+
+  dependencies {
+    classpath fileTree(dir: 'lib/', include: ['*.jar'])
+    classpath group: 'com.nwalsh', name: 'nwalsh-annotations', version: '1.0.1'
+    classpath group: 'com.xmlcalabash', name: 'xmlcalabash1-gradle', version: '1.5.0a13'
+    classpath group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.2.0-99'
+    classpath group: 'org.xmlresolver', name: 'xmlresolver', version: '1.0.6'
+  }
+}
+
+plugins {
+  id "groovy"
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+// Get rid of that [expletive deleted] warning about xml-apis 2.0.2/1.0.b2
+configurations.all {
+  resolutionStrategy {
+    force 'xml-apis:xml-apis:1.4.01'
+    force 'org.xmlresolver:xmlresolver:1.0.1'
+  }
+}
+
+apply plugin: 'com.xmlcalabash.task'
+
+import com.xmlcalabash.XMLCalabashFilter
+import com.xmlcalabash.XMLCalabashTask
+
+task filterTest(type: Copy) {
+  into "/tmp/"
+  from "."
+  include "*.xml"
+  filter(XMLCalabashFilter, pipeline:"filter.xpl",
+         namespaces:[p1:"http://foo.com/", q:"q2","r":"x"],
+         options:["p1:one":1, "{http://foo.com/}two": "b"],
+         params:["p1:one":1, "{http://foo.com/}two": "b"])
+}

@@ -140,11 +140,6 @@ publishing {
   }
 
   repositories {
-/*
-    maven {
-      url = "file:///tmp/x/repo"
-    }
-*/
     maven {
       url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
       credentials {
