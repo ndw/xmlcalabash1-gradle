@@ -2,7 +2,7 @@ buildscript {
   repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://maven.restlet.org" }
+    maven { url "https://maven.restlet.talend.com" }
     maven { url "file://tmp/repo" }
   }
 
@@ -16,8 +16,8 @@ buildscript {
   dependencies {
     classpath fileTree(dir: 'lib/', include: ['*.jar'])
     classpath group: 'com.nwalsh', name: 'nwalsh-annotations', version: '1.0.1'
-    classpath group: 'com.xmlcalabash', name: 'xmlcalabash1-gradle', version: '1.5.0a13'
-    classpath group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.2.0-99'
+    classpath group: 'com.xmlcalabash', name: 'xmlcalabash1-gradle', version: '1.5.0'
+    classpath group: 'com.xmlcalabash', name: 'xmlcalabash', version: '1.2.5-100'
     classpath group: 'org.xmlresolver', name: 'xmlresolver', version: '1.0.6'
   }
 }

@@ -10,7 +10,6 @@ plugins {
   id "groovy"
   id "maven-publish"
   id "signing"
-  id 'de.fuerstenau.buildconfig' version '1.1.8'
 }
 
 apply plugin: 'groovy'
@@ -20,16 +19,19 @@ apply plugin: 'signing'
 repositories {
   mavenLocal()
   mavenCentral()
-  maven { url "https://maven.restlet.org" }
+  maven { url "https://maven.restlet.talend.com" }
 }
 
 dependencies {
-    implementation gradleApi()
-    implementation localGroovy()
-    implementation (
-      [group: 'net.sf.saxon', name: 'Saxon-HE', version: saxonVersion],
-      [group: 'com.xmlcalabash', name: 'xmlcalabash', version: xmlCalabashVersion]
-    )
+  implementation gradleApi()
+  implementation localGroovy()
+  implementation (
+    [group: 'net.sf.saxon', name: 'Saxon-HE', version: saxonVersion],
+    [group: 'com.xmlcalabash', name: 'xmlcalabash', version: xmlCalabashVersion]
+  )
+  testImplementation (
+    [group: 'junit', name: 'junit', version: '4.10']
+  )
 }
 
 // Variables
@@ -43,13 +45,30 @@ task groovydocsJar(type: Jar, dependsOn: groovydoc) {
   archiveClassifier = "javadoc"
 }
 
-buildConfig {
-  appName = "XMLCalabashPlugin"
-  version = distVersion
-  clsName = 'BuildConfig'
-  packageName = "com.xmlcalabash.XMLCalabashPlugin"
-  charset = 'UTF-8'
+// This little bit of hacking replaces the de.fuerstenau.builderconfig
+// extension. That extension doesn't work with Gradle 7.0, hasn't been
+// touched since 2017, and it just seemed easier to do this.
+def bcdir = "${buildDir}/gen/buildconfig/src/main/com/xmlcalabash/XMLCalabashPlugin"
+mkdir(bcdir)
+def bc = new PrintStream(new File("${bcdir}/BuildConfig.java"))
+bc.println("package com.xmlcalabash.XMLCalabashPlugin;")
+bc.println("")
+bc.println("/* Generated code. Do not edit. */")
+bc.println("public final class BuildConfig {")
+bc.println("  private BuildConfig() { /* No instantiation allowed. */ }")
+bc.println("  public static final String VERSION = \"${distVersion}\";")
+bc.println("  public static final String NAME = \"XMLCalabashPlugin\";");
+bc.println("}")
+bc.close()
+
+task compileBuildConfig(
+  type: JavaCompile
+) {
+  classpath = configurations.compileClasspath
+  source "${buildDir}/gen/buildconfig/src/main"
+  destinationDirectory = new File("${buildDir}/classes/java/main")
 }
+compileJava.dependsOn compileBuildConfig
 
 task copyStuff(type: Copy) {
   from 'README.adoc'
@@ -74,18 +93,17 @@ task copyJavaDoc(dependsOn: javadoc, type: Copy) {
 }
 
 task makeDist(dependsOn: [build, copyJar]) {
-    // nop
-}
-makeDist.doLast {
-    println "Created distribution in build/dist"
+  doLast {
+    println("Created distribution in build/dist")
+  }
 }
 
 task zipDist(dependsOn: makeDist, type: Zip) {
   from('build/dist')
   into 'xmlcalabash1-gradle-' + distVersion
-}
-zipDist.doLast {
-  println "Created ZIP archive"
+  doLast {
+    println("Created ZIP archive")
+  }
 }
 
 task dist(dependsOn: [zipDist]) {
